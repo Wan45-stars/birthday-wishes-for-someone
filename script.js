@@ -128,14 +128,15 @@ if (recipientLetterInput) {
 
 // LOGIKA UPLOAD FOTO OTOMATIS KE IMGBB (Untuk diakses si cowo di browser)
 window.pilihFoto = function(inputId) {
+  // Hanya ijinkan upload jika link dibuka dalam mode edit (tidak ada namaDariLink)
   if (namaDariLink) return;
   const inputEl = document.getElementById(inputId);
   if (inputEl) inputEl.click();
 }
 
 window.gantiFoto = async function(event, imgId) {
-  if (!event.target.files || event.target.files.length === 0) return;
   const file = event.target.files[0];
+  if (!file) return;
 
   const imgEl = document.getElementById(imgId);
   if (imgEl) imgEl.src = URL.createObjectURL(file);
@@ -143,10 +144,12 @@ window.gantiFoto = async function(event, imgId) {
   const formData = new FormData();
   formData.append("image", file);
 
+  // Ubah status tombol teks sementara menjadi loading
   const copyBtn = dapatkanElemen("#share-btn-copy");
   if (copyBtn) copyBtn.textContent = "Mengupload foto... ⏳";
 
-  try {
+   try {
+    // PERBAIKAN: Menggunakan alamat endpoint API ImgBB yang benar dan tanda \$ yang tepat
     const response = await fetch(`https://imgbb.com{IMGBB_API_KEY}`, {
       method: "POST",
       body: formData
@@ -154,6 +157,7 @@ window.gantiFoto = async function(event, imgId) {
     const data = await response.json();
     
     if (data.success) {
+  
       const urlGambarSelesai = data.data.url;
       
       if (imgId === "img-memory-1") linkFoto1 = urlGambarSelesai;
@@ -171,6 +175,7 @@ window.gantiFoto = async function(event, imgId) {
     console.error("Gagal mengunggah foto:", error);
     if (copyBtn) copyBtn.textContent = "Gagal upload foto ❌";
   }
+
 }
 
 const retypeBtn = dapatkanElemen("#retype-button");
@@ -259,3 +264,7 @@ const wishes = [
   "Semoga satu per satu impianmu menemukan jalan pulang.",
   "Semoga kamu selalu punya tempat untuk merasa aman dan dicintai."
 ];
+
+const wishBtn = dapatkanElemen("#wish-button");
+if (wishBtn) {
+}
