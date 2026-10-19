@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Untuk Kamu, Sayang ♡</title>
+    <link rel="stylesheet" href="./style.css?v=1001">
+</head>
+<body>
+
+    <audio id="background-music" src="assets/music.mp3" loop></audio>
+    <div id="floating-layer"></div>
+
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <header class="topbar">
+        <div class="brand">
+            <span class="brand-heart">♡</span> little moments
+        </div>
+        <button class="music-toggle" id="music-toggle" aria-pressed="false">
+            <span id="music-icon">♫</span>
+            <span id="music-label">Putar musik</span>
+        </button>
+    </header>
+
+    <main class="section hero">
+        <div class="hero-copy">
+            <p class="eyebrow"><span class="sparkle">✦</span> a little website, made with love</p>
+            <h1 id="recipient-heading">Happy Birthday</h1>
+            <p class="hero-intro">Hari ini dunia punya alasan ekstra untuk tersenyum—karena seseorang seindah kamu lahir ke dunia.</p>
+            <a href="#letter-section" class="button button-primary">
+                Buka surat kecilku <span>↘</span>
+            </a>
+            <p class="tiny-note">dibuat khusus untuk kamu, dari seseorang yang sayang kamu ♡</p>
+            <div class="scroll-cue">SCROLL PELAN-PELAN <span>↓</span></div>
+        </div>
+
+        <div class="hero-art">
+            <div class="sun-disc"></div>
+            <div class="hero-heart">♥</div>
+            <div class="orbit orbit-one"></div>
+            <div class="orbit orbit-two"></div>
+            <div class="flower flower-a"><span>✿</span></div>
+            <div class="flower flower-b"><span>✿</span></div>
+            <div class="flower flower-c"><span>✧</span></div>
+            <span class="art-sparkle sparkle-one">✦</span>
+            <span class="art-sparkle sparkle-two">♡</span>
+            <span class="art-sparkle sparkle-three">✦</span>
+            <div class="art-caption">you make life softer</div>
+        </div>
+    </main>
+
+    <section class="section note-section" id="letter-section">
+        <div class="section-heading">
+            <p class="eyebrow">FROM MY HEART</p>
+            <h2>A little letter <em>for you</em></h2>
+            <p class="section-subtitle">Ada beberapa hal yang pengin aku bilang di hari spesialmu.</p>
+        </div>
+
+        <div class="letter-card">
+            <div class="letter-decoration">♡</div>
+            
+            <h2 class="letter-greeting">
+                Untuk kamu, 
+                <!-- Kotak input nama yang dinamis dengan class pemantau garis -->
+                <input type="text" id="recipient-letter-input" class="garis-isi" placeholder="Tulis nama di sini" autocomplete="off">
+            </h2>
+            
+            <p class="typing-message" id="typing-message"></p>
+            <span class="typing-cursor" id="typing-cursor">|</span>
+            
+            <div class="letter-sign">with all my love, <span>♡</span></div>
+            <button class="text-button" id="retype-button">Baca lagi dari awal ↻</button>
+        </div>
+
+        <!-- TOMBOL BAGIKAN LINK ESTETIK BARU -->
+        <div class="share-box-container" id="share-area" style="display: none;">
+            <p>🎁 Susunan nama geus siap! Salin link di handap jang dikirimkeun ka si doi:</p>
+            <div class="share-bar">
+                <input type="text" id="share-link-output" readonly>
+                <button id="share-btn-copy">Salin Link 🔗</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section memories-section">
+        <div class="section-heading">
+            <p class="eyebrow">OUR LITTLE UNIVERSE</p>
+            <h2>Little pieces of <em>happiness</em></h2>
+        </div>
+
+        <div class="gallery">
+            <figure class="photo-card" onclick="pilihFoto('file-foto-1')">
+                <img id="display-foto-1" src="images/foto 1.jpg" alt="Memory 1">
+                <input type="file" id="file-foto-1" accept="image/*" style="display: none;" onchange="gantiFoto(event, 'display-foto-1')">
+                <figcaption><span>01</span> the way you make me smile</figcaption>
+            </figure>
+
+            <figure class="photo-card photo-short" onclick="pilihFoto('file-foto-2')">
+                <img id="display-foto-2" src="images/foto 2.jpg" alt="Memory 2">
+                <input type="file" id="file-foto-2" accept="image/*" style="display: none;" onchange="gantiFoto(event, 'display-foto-2')">
+                <figcaption><span>02</span> little things, big feelings</figcaption>
+            </figure>
+
+            <figure class="photo-card" onclick="pilihFoto('file-foto-3')">
+                <img id="display-foto-3" src="images/foto 3.jpg" alt="Memory 3">
+                <input type="file" id="file-foto-3" accept="image/*" style="display: none;" onchange="gantiFoto(event, 'display-foto-3')">
+                <figcaption><span>03</span> Meeting you is the best thing</figcaption>
+            </figure>
+        </div>
+        <p class="gallery-tip">✨ Tips: Klik langsung pada foto untuk menggantinya dari galeri HP / folder laptop!</p>
+    </section>
+
+    <section class="wish-section">
+        <div class="wish-card">
+            <div class="wish-flower">✿</div>
+            <p class="eyebrow">MAKE A WISH</p>
+            <h2>Pejamkan mata, <em>make a wish.</em></h2>
+            <p>Semoga satu per satu hal baik menemukan jalannya ke kamu.</p>
+            <button class="button button-primary" id="wish-button">Aku punya harapan ✨</button>
+            <p class="wish-result" id="wish-result"></p>
+        </div>
+    </section>
+
+    <section class="section final-section">
+        <div class="big-heart">♥</div>
+        <p class="eyebrow">ONE LAST THING</p>
+        <h2>Semoga kamu selalu merasa <em>dicintai.</em></h2>
+        <p>Hari ini, besok, dan di hari-hari biasa setelahnya.</p>
+        <button class="button button-dark" id="surprise-button">Klik untuk kejutan kecil ♡</button>
+        <p class="surprise-message" id="surprise-message" hidden></p>
+    </section>
+
+    <footer class="footer">
+        <span id="footer-year">© 2026 · dibuat dengan cinta</span>
+        <span>just for you</span>
+    </footer>
+
+    <script src="./script.js"></script>
+</body>
+</html>
