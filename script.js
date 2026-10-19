@@ -178,8 +178,6 @@ window.gantiFoto = async function(event, imgId) {
     console.error("Gagal mengunggah foto:", error);
     if (copyBtn) copyBtn.textContent = "Gagal upload foto ❌";
   }
-};
-
 }
 
 const retypeBtn = dapatkanElemen("#retype-button");
