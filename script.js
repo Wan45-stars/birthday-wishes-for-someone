@@ -138,18 +138,18 @@ window.gantiFoto = async function(event, imgId) {
   const file = event.target.files[0];
   if (!file) return;
 
-  const imgEl = document.getElementById(imgId);
-  if (imgEl) imgEl.src = URL.createObjectURL(file);
+  const copyBtn = document.getElementById("copy-btn"); // sesuaikan dengan id tombol salin Anda jika berbeda
+  if (copyBtn) copyBtn.textContent = "Mengupload foto... ⏳";
 
   const formData = new FormData();
   formData.append("image", file);
 
-  // Ubah status tombol teks sementara menjadi loading
-  const copyBtn = dapatkanElemen("#share-btn-copy");
-  if (copyBtn) copyBtn.textContent = "Mengupload foto... ⏳";
+  // GANTI TEKS DI BAWAH INI DENGAN API KEY ASLI ANDA LANGSUNG (Tanpa tanda kurung atau kurung kurawal)
+  const MY_API_KEY = "dbff725afa76d3cca8e851ae9653993e"; 
 
   try {
-    const response = await fetch(`https://imgbb.com{IMGBB_API_KEY}`, {
+    // Memanggil endpoint resmi ImgBB yang benar dengan API Key langsung
+    const response = await fetch(`https://imgbb.com{MY_API_KEY}`, {
       method: "POST",
       body: formData
     });
@@ -158,12 +158,17 @@ window.gantiFoto = async function(event, imgId) {
     if (data.success) {
       const urlGambarSelesai = data.data.url;
       
+      // Memasukkan hasil URL ke memori link
       if (imgId === "img-memory-1") linkFoto1 = urlGambarSelesai;
       if (imgId === "img-memory-2") linkFoto2 = urlGambarSelesai;
       if (imgId === "img-memory-3") linkFoto3 = urlGambarSelesai;
 
-      const namaAktif = (recipientLetterInput && recipientLetterInput.value) ? recipientLetterInput.value : "";
-      updateShareLink(namaAktif);
+      // Update tampilan gambar di browser secara real-time
+      const imgTarget = document.getElementById(imgId);
+      if (imgTarget) imgTarget.src = urlGambarSelesai;
+
+      const namaAktif = (typeof recipientLetterInput !== 'undefined' && recipientLetterInput && recipientLetterInput.value) ? recipientLetterInput.value : "";
+      if (typeof updateShareLink === 'function') updateShareLink(namaAktif);
       if (copyBtn) copyBtn.textContent = "Salin Link 🔗";
     } else {
       console.error("ImgBB Error:", data.error);
@@ -173,6 +178,8 @@ window.gantiFoto = async function(event, imgId) {
     console.error("Gagal mengunggah foto:", error);
     if (copyBtn) copyBtn.textContent = "Gagal upload foto ❌";
   }
+};
+
 }
 
 const retypeBtn = dapatkanElemen("#retype-button");
