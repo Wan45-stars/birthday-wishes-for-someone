@@ -165,11 +165,15 @@ window.gantiFoto = async function(event, imgId) {
       const namaAktif = (recipientLetterInput && recipientLetterInput.value) ? recipientLetterInput.value : "";
       updateShareLink(namaAktif);
       if (copyBtn) copyBtn.textContent = "Salin Link 🔗";
+    } else {
+      console.error("ImgBB Error:", data.error);
+      if (copyBtn) copyBtn.textContent = "Gagal upload foto ❌";
     }
   } catch (error) {
     console.error("Gagal mengunggah foto:", error);
-    if (copyBtn) copyBtn.textContent = "Gagal upload foto ❌";
+    if (copyBtn) copyBtn.textContent = "Gagal upload foto ❌"
   }
+
 }
 
 const retypeBtn = dapatkanElemen("#retype-button");
