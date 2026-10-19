@@ -16,7 +16,14 @@ Happy birthday, my love. I’m so lucky to have you. ♡`;
   musikFile: "assets/music.mp3"
 };
 
-// Pemilih elemen (Selector) yang sudah diperbaiki total dari backslash
+// API Key ImgBB kamu
+const IMGBB_API_KEY = "dbff725afa76d3cca8e851ae9653993e";
+
+// Menyimpan URL foto hasil upload
+let linkFoto1 = "";
+let linkFoto2 = "";
+let linkFoto3 = "";
+
 const dapatkanElemen = (selector) => document.querySelector(selector);
 
 const recipientHeading = dapatkanElemen("#recipient-heading");
@@ -40,20 +47,26 @@ if (footerYear) footerYear.textContent = `© ${new Date().getFullYear()} · dibu
 let typingTimer;
 let isTyping = false;
 
-// 1. LOGIKA DETEKSI LINK OTOMATIS (URL PARAMETER)
+// LOGIKA DETEKSI LINK OTOMATIS (URL PARAMETER)
 const urlParams = new URLSearchParams(window.location.search);
 const namaDariLink = urlParams.get('nama');
+const foto1DariLink = urlParams.get('f1');
+const foto2DariLink = urlParams.get('f2');
+const foto3DariLink = urlParams.get('f3');
+
+// Tampilkan foto jika ada di parameter link (Saat si cewe buka)
+if (foto1DariLink) { const img = dapatkanElemen("#img-memory-1"); if(img) img.src = foto1DariLink; }
+if (foto2DariLink) { const img = dapatkanElemen("#img-memory-2"); if(img) img.src = foto2DariLink; }
+if (foto3DariLink) { const img = dapatkanElemen("#img-memory-3"); if(img) img.src = foto3DariLink; }
 
 if (recipientLetterInput) {
     if (namaDariLink) {
-        // Jika dibuka lewat link yang sudah ada namanya (Untuk si doi)
         recipientLetterInput.value = namaDariLink;
         recipientLetterInput.classList.remove("garis-isi");
         recipientLetterInput.readOnly = true;
         recipientLetterInput.style.cursor = "default";
         if (shareArea) shareArea.style.display = "none"; 
     } else {
-        // Jika dibuka pertama kali untuk dibuat template-nya
         recipientLetterInput.value = "";
         recipientLetterInput.classList.add("garis-isi");
         if (shareArea) shareArea.style.display = "block"; 
@@ -85,11 +98,15 @@ function typeLetter() {
 function updateShareLink(nama) {
     if (!shareLinkOutput) return;
     const baseURl = window.location.origin + window.location.pathname;
-    if (nama.trim() === "") {
-        shareLinkOutput.value = baseURl;
-    } else {
-        shareLinkOutput.value = `${baseURl}?nama=${encodeURIComponent(nama.trim())}`;
-    }
+    
+    let queryParams = new URLSearchParams();
+    if (nama.trim() !== "") queryParams.append("nama", nama.trim());
+    if (linkFoto1) queryParams.append("f1", linkFoto1);
+    if (linkFoto2) queryParams.append("f2", linkFoto2);
+    if (linkFoto3) queryParams.append("f3", linkFoto3);
+
+    const stringQuery = queryParams.toString();
+    shareLinkOutput.value = stringQuery ? `${baseURl}?${stringQuery}` : baseURl;
 }
 
 if (recipientLetterInput) {
@@ -107,6 +124,52 @@ if (recipientLetterInput) {
       }
       typeLetter();
   });
+}
+
+// LOGIKA UPLOAD FOTO OTOMATIS KE IMGBB (Untuk diakses si cowo di browser)
+window.pilihFoto = function(inputId) {
+  // Hanya ijinkan upload jika link dibuka dalam mode edit (tidak ada namaDariLink)
+  if (namaDariLink) return;
+  const inputEl = document.getElementById(inputId);
+  if (inputEl) inputEl.click();
+}
+
+window.gantiFoto = async function(event, imgId) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const imgEl = document.getElementById(imgId);
+  if (imgEl) imgEl.src = URL.createObjectURL(file);
+
+  const formData = new FormData();
+  formData.append("image", file);
+
+  // Ubah status tombol teks sementara menjadi loading
+  const copyBtn = dapatkanElemen("#share-btn-copy");
+  if (copyBtn) copyBtn.textContent = "Mengupload foto... ⏳";
+
+  try {
+    const response = await fetch(`https://imgbb.com{IMGBB_API_KEY}`, {
+      method: "POST",
+      body: formData
+    });
+    const data = await response.json();
+    
+    if (data.success) {
+      const urlGambarSelesai = data.data.url;
+      
+      if (imgId === "img-memory-1") linkFoto1 = urlGambarSelesai;
+      if (imgId === "img-memory-2") linkFoto2 = urlGambarSelesai;
+      if (imgId === "img-memory-3") linkFoto3 = urlGambarSelesai;
+
+      const namaAktif = (recipientLetterInput && recipientLetterInput.value) ? recipientLetterInput.value : "";
+      updateShareLink(namaAktif);
+      if (copyBtn) copyBtn.textContent = "Salin Link 🔗";
+    }
+  } catch (error) {
+    console.error("Gagal mengunggah foto:", error);
+    if (copyBtn) copyBtn.textContent = "Gagal upload foto ❌";
+  }
 }
 
 const retypeBtn = dapatkanElemen("#retype-button");
@@ -198,39 +261,4 @@ const wishes = [
 
 const wishBtn = dapatkanElemen("#wish-button");
 if (wishBtn) {
-    wishBtn.addEventListener("click", (event) => {
-      const result = dapatkanElemen("#wish-result");
-      if (result) result.textContent = wishes[Math.floor(Math.random() * wishes.length)];
-      burstParticles(event.currentTarget);
-    });
-}
-
-const surpriseBtn = dapatkanElemen("#surprise-button");
-if (surpriseBtn) {
-    surpriseBtn.addEventListener("click", (event) => {
-      const message = dapatkanElemen("#surprise-message");
-      if (message) {
-          message.hidden = false;
-          message.textContent = CONFIG.pesanKejutan;
-      }
-      event.currentTarget.textContent = "Kejutan sudah terbuka ♡";
-      burstParticles(event.currentTarget);
-    });
-}
-
-function pilihFoto(inputId) {
-  const inputEl = document.getElementById(inputId);
-  if (inputEl) inputEl.click();
-}
-
-function gantiFoto(event, imgId) {
-  const file = event.target.files[0]; // Menambahkan index [0] agar membaca single file dengan benar
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const imgEl = document.getElementById(imgId);
-      if (imgEl) imgEl.src = e.target.result;
-    }
-    reader.readAsDataURL(file);
-  }
 }
